@@ -33,7 +33,7 @@ OSCClient.prototype.sendOSC = function (oscMessage, args) {
 OSCHandler = function (proxyServer, udpServers) {
 
     this.localClients = {};
-    this.OSCDecoder = new OSC.Decoder();
+    //this.OSCDecoder = new OSC.Decoder();
     this.OSCEncoder = new OSC.Encoder();
     this.udpServers = udpServers || null;
     this.proxyServer = proxyServer || null;

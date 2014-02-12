@@ -14,10 +14,11 @@ graph.name = "graph";
 var width = 750, height = 750;
 var force, vis;
 var edges, nodes;
-var udpHosts, handler, client, proxyServer, encoder;
 
-
-//var osc=require('osc.js');
+	//////////////////////////////////////////////////////////////////////
+	var OSCsocket;
+	//////////////////////////////////////////////////////////////////////
+	
 
 // There are three phases for a visualization life-cycle:
 // init does initialization and receives the existing set of connections
@@ -42,7 +43,7 @@ var highlight = {
 function onUpdate(){
     // new nodes, reheat graph simulation
     if (force){
-        // console.log('restarting graph due to update');
+        console.log('restarting graph due to update');
         force.stop();
         force.nodes(filteredAggregate.nodes);
         force.links(filteredAggregate.edges);
@@ -55,7 +56,30 @@ function onUpdate(){
 }
 
 function onInit(){
-     console.log('graph::onInit()');
+    console.log('graph::onInit()');
+
+	//////////////////////////////////////////////////////////////////////
+	// connect to OSC bridge
+   OSCsocket = io.connect('http://127.0.0.1', { port: 8081, rememberTransport: false});
+
+   console.log('oioioi');
+   
+   OSCsocket.on('connect', function() {
+        // sends to OSCsocket.io server the host/port of oscServer
+        // and oscClient
+        OSCsocket.emit('config',
+            {
+                client: {
+                    port: 57120,
+                    host: '127.0.0.1'
+                }
+            }
+        );
+   });
+	
+	OSCsocket.emit('message', '/status', 'init graph');
+	//////////////////////////////////////////////////////////////////////
+
      //console.log('initializing graph from %s connections', filteredAggregate.nodes.length);
     vis = d3.select(vizcanvas);
     // A D3 visualization has a two main components, data-shaping, and setting up the D3 callbacks
@@ -66,19 +90,6 @@ function onInit(){
     vizcanvas.setAttribute('viewBox', [0,0,width,height].join(' '));
     // console.log('graph::onInit end');
     document.querySelector(".filter-display").classList.remove("hidden");
-
- // the OSC bit
-    //proxyServer = {host: 'localhost', port: 1488};
-    //udpHosts = [{host: 'localhost', port: 57120}];
-    // handler = new OSCHandler(/*proxyServer*/ null, udpHosts);
-    // //encoder = new OSC().Encoder();
-
-    // sendMsg(new Message('/hello'));
-
-    console.log('hello!!');
-
-	OSCsocket.emit('message', {addr: '/status', msg: 'init graph'});
-   
 };
 
 function onRemove(){
@@ -96,16 +107,6 @@ function onReset(){
     onRemove();
     aggregate.emit('load', allConnections);
 }
-
-
-// OSC
-
-// function sendMsg(oscMessage, args) {
-//     // Encode it
-//     var binaryMsg = encoder.encode(oscMessage);
-//     var flags = args;
-//     oscHandler.socket.emit('osc', { osc: binaryMsg });
-// }
 
 // UTILITIES FOR CREATING POLYGONS
 
@@ -162,7 +163,7 @@ function charge(d){ return -(500 +  d.weight * 25); }
 
 function initGraph(){
     // Initialize D3 layout and bind data
-    // console.log('initGraph()');
+    console.log('initGraph()');
     force = d3.layout.force()
         .nodes(filteredAggregate.nodes)
         .links(filteredAggregate.edges)
@@ -249,8 +250,10 @@ function updateGraph(){
     console.log('updateGraph()');
     // Data binding for links
 
-	OSCsocket.emit('message', {addr: '/status', msg: 'updating graph'});
-				   
+	//////////////////////////////////////////////////////////////////////
+	OSCsocket.emit('message', '/status', 'updating graph');
+	//////////////////////////////////////////////////////////////////////
+	
     edges = vis.selectAll('.edge')
         .data(filteredAggregate.edges, nodeName );
 

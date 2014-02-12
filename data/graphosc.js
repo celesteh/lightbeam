@@ -68,16 +68,17 @@ function onInit(){
     document.querySelector(".filter-display").classList.remove("hidden");
 
  // the OSC bit
-    proxyServer = {host: 'localhost', port: 1488};
-    udpHosts = [{host: 'localhost', port: 57120}];
-    handler = new OSCHandler(/*proxyServer*/ null, udpHosts);
-    encoder = new OSC().Encoder();
- 
-    sendMsg(new Message('/hello'));
+    //proxyServer = {host: 'localhost', port: 1488};
+    //udpHosts = [{host: 'localhost', port: 57120}];
+    // handler = new OSCHandler(/*proxyServer*/ null, udpHosts);
+    // //encoder = new OSC().Encoder();
+
+    // sendMsg(new Message('/hello'));
 
     console.log('hello!!');
-    
-    
+
+	OSCsocket.emit('message', {addr: '/status', msg: 'init graph'});
+   
 };
 
 function onRemove(){
@@ -99,12 +100,12 @@ function onReset(){
 
 // OSC
 
-function sendMsg(oscMessage, args) {
-    // Encode it
-    var binaryMsg = encoder.encode(oscMessage);
-    var flags = args;
-    oscHandler.socket.emit('osc', { osc: binaryMsg });
-}
+// function sendMsg(oscMessage, args) {
+//     // Encode it
+//     var binaryMsg = encoder.encode(oscMessage);
+//     var flags = args;
+//     oscHandler.socket.emit('osc', { osc: binaryMsg });
+// }
 
 // UTILITIES FOR CREATING POLYGONS
 
@@ -245,8 +246,11 @@ function initGraph(){
 }
 
 function updateGraph(){
-    // console.log('updateGraph()');
-        // Data binding for links
+    console.log('updateGraph()');
+    // Data binding for links
+
+	OSCsocket.emit('message', {addr: '/status', msg: 'updating graph'});
+				   
     edges = vis.selectAll('.edge')
         .data(filteredAggregate.edges, nodeName );
 

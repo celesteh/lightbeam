@@ -6,7 +6,9 @@
     <link rel="stylesheet" type="text/css" href="OpenSans.css" />
     <link rel="stylesheet" type="text/css" href="font-awesome.css" />
     <link rel="stylesheet" type="text/css" href="style.css" />
-    <link rel="shortcut icon" type="image/png" href="icons/lightbeam_logo-only_32x32.png">
+    <link rel="shortcut icon" type="image/png"
+		  href="icons/lightbeam_logo-only_32x32.png">
+	
 </head>
 <body role="application">
     <div class="main">
@@ -547,7 +549,35 @@
     </div>
     </div>
     <div id="tooltip"></div>
+	<script src="http://127.0.0.1:8081/socket.io/socket.io.js"></script>
+	
+<script>
+   OSCsocket = io.connect('http://127.0.0.1', { port: 8081, rememberTransport: false});
+   console.log('oi');
+   OSCsocket.on('connect', function() {
+        // sends to OSCsocket.io server the host/port of oscServer
+        // and oscClient
+        OSCsocket.emit('config',
+            {
+                server: {
+                    port: 3333,
+                    host: '127.0.0.1'
+                },
+                client: {
+                    port: 57120,
+                    host: '127.0.0.1'
+                }
+            }
+        );
+    });
+   /* OSCsocket.on('message', function(obj) {
+        var status = document.getElementById("status");
+        status.innerHTML = obj[0];
+   console.log(obj);
+      OSCsocket.emit('message', '/foobar');
+   });*/
 
+</script>
     <script src="d3.v3.min.js"></script>
     <script src="events.js" type="application/javascript;version=1.8"></script>
     <script src="osc.js" type="application/javascript;version=1.8"></script>

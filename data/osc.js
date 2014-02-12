@@ -1,4 +1,5 @@
-function OSC {};
+function OSC() {};
+//function OSC.Encoder() {};
 
 // by  Cristiano Belloni 
 // https://github.com/janesconference/KievII
@@ -9,7 +10,7 @@ function OSC {};
 // OSC Message
 ////////////////////
 
-OSC.Message = function (address) {
+OSC.Message = function(address) {
     this.address = address;
     this.typetags = '';
     this.args = [];

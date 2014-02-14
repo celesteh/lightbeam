@@ -7,8 +7,8 @@ This is an add-on for Firefox that helps to visualize sites that may be tracking
 
 * [Mozilla Add-on SDK][ASDK]
 * [Firefox 18][] or higher.
+* <a href="https://github.com/BiLEnsemble/osc-web">osc-web</a>
 
-If you only want to see the demo, you don't need any of these; all you need is a modern browser.
 
 ## Quick Start
 

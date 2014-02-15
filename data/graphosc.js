@@ -247,11 +247,11 @@ function initGraph(){
 }
 
 function updateGraph(){
-    console.log('updateGraph()');
+    //console.log('updateGraph()');
     // Data binding for links
 
 	//////////////////////////////////////////////////////////////////////
-	OSCsocket.emit('message', '/status', 'updating graph');
+	//OSCsocket.emit('message', '/status', 'updating graph');
 	//////////////////////////////////////////////////////////////////////
 	
     edges = vis.selectAll('.edge')

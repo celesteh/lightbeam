@@ -5,7 +5,10 @@
 (function(global){
 "use strict";
 
+// An emitter that lists nodes and edges so we can build the data structure
+// used by all 3 visualizers.
 var aggregate = new Emitter();
+
 
 	//////////////////////////////////////////////////////////////////////
 	var OSCsocket;
@@ -36,6 +39,7 @@ var aggregate = new Emitter();
 	//////////////////////////////////////////////////////////////////////
 
 
+
 global.aggregate = aggregate;
 global.filteredAggregate = {
     nodes: [],
@@ -44,6 +48,7 @@ global.filteredAggregate = {
 
 aggregate.trackerCount = 0;
 aggregate.siteCount = 0;
+// d3 has functionality to build graphs out of lists of nodes and edges.
 aggregate.nodes = [];
 aggregate.edges = [];
 aggregate.recentSites = [];
@@ -124,21 +129,8 @@ aggregate.nodeForKey = function(key){
 };
 
 aggregate.connectionAsObject = function(conn){
-    var conned, node;
-
-
     if (Array.isArray(conn)){
-        /*
-        strs = new Array();
-        //OSCsocket.emit('message', '/site',conn[SOURCE],  conn[TARGET]);
-        for( var i = 0; i<conn.length; i++) {
-            strs[i] = String(conn[i]);
-        };
-        
-        OSCsocket.emit.apply(OSCsocket, ['message', '/site'].concat(strs)); 
-        */
-
-        conned = {
+        return{
             source: conn[SOURCE],
             target: conn[TARGET],
             timestamp: new Date(conn[TIMESTAMP]),
@@ -154,20 +146,10 @@ aggregate.connectionAsObject = function(conn){
             status: conn[STATUS],
             cacheable: conn[CACHEABLE]
         };
-    } else {
-        conned = conn;  
-    };
-
-    //node = new GraphNode(conned, conned.sourceVisited);
-    //onConnection(conned);
-    //node = figureShitOut(conned);
-
-    //OSCsocket.emit('message', '/site/'.concat(String(node.nodeType)), node.name, 
-    //    node.visitedCount, node.howMany, node.cookieCount);
-    return conned;
+    }
+    return conn;
 
 }
-
 
 
 function applyFilter(filter){
@@ -176,12 +158,15 @@ function applyFilter(filter){
 
 aggregate.on('filter', applyFilter);
 
+// Pass the list of connections to build the graph structure to pass to d3 for
+// visualizations.
 function onLoad(connections){
     // var startTime = Date.now();
     // console.log('aggregate::onLoad with %s connections', connections.length);
     connections.forEach(onConnection);
     aggregate.initialized = true;
     filteredAggregate = currentFilter();
+    // Tell the visualization that we're ready.
     currentVisualization.emit('init');
     updateStatsBar();
     // console.log('aggregate::onLoad end, took %s ms', Date.now() - startTime);
@@ -205,98 +190,14 @@ aggregate.on('load', onLoad);
 //const STATUS = 12;
 //const CACHEABLE = 13;
 
+// Check that recent sites include the domain. This is another potential source
+// of false positives.
 aggregate.isDomainVisited = function isDomainVisited(domain){
     return aggregate.recentSites.length && (aggregate.recentSites.indexOf(domain) > -1);
 }
 
-function figureShitOut(connection) {
-    var sourcenode, targetnode, edge, nodelist, updated = false;
-    // Maintain the list of sites visited in dated order
-    // console.log('check for recent sites: %s: %s', connection.source, connection.sourceVisited);
-//OSCsocket.emit('message', '/motherfucker', 'fuck you');
-
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!onConnection!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    if (connection.sourceVisited){
-         console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!source visited: %s -> %s', connection.source, connection.target);
-        var site = connection.target;
-        var siteIdx = aggregate.recentSites.indexOf(site);
-        if (aggregate.recentSites.length && siteIdx === (aggregate.recentSites.length - 1)){
-            // most recent site is already at the end of the recentSites list, do nothing
-        }else{
-
-            if (siteIdx > -1){
-                // if site is already in list (but not last), remove it
-                aggregate.recentSites.splice(siteIdx, 1);
-            }
-            aggregate.recentSites.push(site); // push site on end of list if it is not there
-            updated = true;
-        }
-    }else{
-         console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!source not visited: %s -> %s', connection.source, connection.target);
-    }
-    // Retrieve the source node and update, or create it if not found
-    if (aggregate.nodemap[connection.source]){
-        sourcenode = aggregate.nodemap[connection.source];
-        if (connection.sourceVisited && sourcenode.nodeType == "thirdparty"){
-            // the previously "thirdparty" site has now become a "visited" site
-            // +1 on visited sites counter and -1 on trackers counter
-            aggregate.siteCount++;
-            aggregate.trackerCount--;
-        }
-        sourcenode.update(connection, true);
-    }else{
-        sourcenode = new GraphNode(connection, true);
-        aggregate.nodemap[connection.source] = sourcenode;
-        aggregate.nodes.push(sourcenode);
-
-        if (connection.sourceVisited){
-            aggregate.siteCount++;
-        }else{
-            aggregate.trackerCount++;
-        }
-        // console.log('new source: %s, now %s nodes', sourcenode.name, aggregate.nodes.length);
-        updated = true;
-    }
-    // Retrieve the target node and update, or create it if not found
-    if (aggregate.nodemap[connection.target]){
-        targetnode = aggregate.nodemap[connection.target];
-        targetnode.update(connection, false);
-    }else{
-        targetnode = new GraphNode(connection, false);
-        aggregate.nodemap[connection.target] = targetnode;
-        aggregate.nodes.push(targetnode); // all nodes
-        if (connection.sourceVisited){
-            aggregate.siteCount++; // Can this ever be true?
-        }else{
-            aggregate.trackerCount++;
-        }
-        // console.log('new target: %s, now %s nodes', targetnode.name, aggregate.nodes.length);
-        updated = true
-    }
-    // Create edge objects. Could probably do this lazily just for the graph view
-    if (aggregate.edgemap[connection.source + '->' + connection.target]){
-        edge = aggregate.edgemap[connection.source + '->' + connection.target];
-        edge.update(connection);
-    }else{
-        edge = new GraphEdge(sourcenode, targetnode, connection);
-        aggregate.edgemap[edge.name] = edge;
-        aggregate.edges.push(edge);
-        // updated = true;
-    }
-    if (updated){
-        aggregate.update();
-    }
-
-    //OscSocket.emit('message', '/site', targetnode.name, targetnode.
-
-    //OSCsocket.emit('message', '/motherfucker', 'fuck you');
-    //updateStatsBar();
-
-    return targetnode;
-}
 
 function onConnection(conn){
-    //console.log('FUCKYOUFUCKYOUFUCKYOUFUCKYOUFUCKYOUFUCKYOUFUCKYOUFUCKUOFUCKYOUFUCKYOUFUCKYOU");
     // A connection has the following keys:
     // source (url), target (url), timestamp (int), contentType (str), cookie (bool), sourceVisited (bool), secure(bool), sourcePathDepth (int), sourceQueryDepth(int)
     // We want to shape the collection of connections that represent points in time into
@@ -307,11 +208,8 @@ function onConnection(conn){
     var sourcenode, targetnode, edge, nodelist, updated = false;
     // Maintain the list of sites visited in dated order
     // console.log('check for recent sites: %s: %s', connection.source, connection.sourceVisited);
-OSCsocket.emit('message', '/motherfucker', 'fuck you');
-
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!onConnection!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     if (connection.sourceVisited){
-         console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!source visited: %s -> %s', connection.source, connection.target);
+        // console.log('source visited: %s -> %s', connection.source, connection.target);
         var site = connection.target;
         var siteIdx = aggregate.recentSites.indexOf(site);
         if (aggregate.recentSites.length && siteIdx === (aggregate.recentSites.length - 1)){
@@ -326,7 +224,7 @@ OSCsocket.emit('message', '/motherfucker', 'fuck you');
             updated = true;
         }
     }else{
-         console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!source not visited: %s -> %s', connection.source, connection.target);
+        // console.log('source not visited: %s -> %s', connection.source, connection.target);
     }
     // Retrieve the source node and update, or create it if not found
     if (aggregate.nodemap[connection.source]){
@@ -380,10 +278,6 @@ OSCsocket.emit('message', '/motherfucker', 'fuck you');
     if (updated){
         aggregate.update();
     }
-    
-
-    // LES
-    // CURRENT AREA OF INTEREST
 
     OSCsocket.emit('message', '/site/'.concat(String(targetnode.nodeType)), targetnode.name, 
         aggregate.getConnectionCount(targetnode), targetnode.visitedCount, targetnode.cookieCount);
@@ -408,11 +302,13 @@ function onBlocklistUpdate({ domain, flag }) {
 }
 aggregate.on('update-blocklist', onBlocklistUpdate);
 
+// Make sure all the blocklist is in local storage.
 function onBlocklistUpdateAll(domains) {
   (domains || []).forEach(onBlocklistUpdate);
 }
 aggregate.on('update-blocklist-all', onBlocklistUpdateAll);
 
+// Used only by the graph view.
 function GraphEdge(source, target, connection){
     var name = source.name + '->' + target.name;
     if (aggregate.edgemap[name]){
@@ -445,8 +341,7 @@ GraphEdge.prototype.update = function(connection){
 // from exploding.
 //
 function GraphNode(connection, isSource){
-      console.log('!!!!!!!!!!!!!!!!!!!!!!!connection!!!!!!!!!!!!!!!!!!!!!!');
-  this.firstAccess = this.lastAccess = connection.timestamp;
+    this.firstAccess = this.lastAccess = connection.timestamp;
     this.linkedFrom = [];
     this.linkedTo = [];
     this.contentTypes = [];
@@ -469,12 +364,9 @@ function GraphNode(connection, isSource){
     this.weight = 0;
 }
 GraphNode.prototype.update = function(connection, isSource){
-
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!UPDATE!!!!!!!!!!!!!!!!!!!!!!');
-
     if (!this.name){
         this.name = isSource ? connection.source : connection.target;
-         console.log('node: %s', this.name);
+        // console.log('node: %s', this.name);
     }
     if (connection.timestamp > this.lastAccess){
         this.lastAccess = connection.timestamp;
@@ -517,8 +409,6 @@ GraphNode.prototype.update = function(connection, isSource){
     }else{
         this.nodeType = 'both';
     }
-
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!UPDATE!!!!!!!!!!!!!!!!!!!!!!');
     return this;
 };
 
@@ -672,3 +562,4 @@ aggregate.update = debounce(function update(){
 });
 
 })(this);
+

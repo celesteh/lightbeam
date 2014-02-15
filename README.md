@@ -24,6 +24,7 @@ Then, check out the Lightbeam repository and enter it (do this where you want th
 
 Finally, run:
 
+    node bridge.js
     cfx run
 
 This will start Firefox with a temporary profile that has Lightbeam installed. Just click on the Lightbeam icon at the bottom-right of the browser window to open the web front-end.

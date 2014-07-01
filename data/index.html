@@ -24,10 +24,7 @@
                     <a data-value="Graph" role="menuitem" tabIndex="1" aria-label="Graph Visualization">
                         <img src="image/lightbeam_icon_graph.png" />graph
                     </a>
-                    <a data-value="Clock" role="menuitem" tabIndex="2" aria-label="Clock Visualization">
-                        <img src="image/lightbeam_icon_clock.png" />clock
-                    </a>
-                    <a data-value="List" role="menuitem" tabIndex="3" aria-label="List. Display data in tabular format.">
+                    <a data-value="List" role="menuitem" tabIndex="2" aria-label="List. Display data in tabular format.">
                         <img src="image/lightbeam_icon_list.png" />list
                     </a>
                 </div>
@@ -44,7 +41,7 @@
                 </a>
             </div>
             <div class="links">
-                <img src="image/lightbeam_icon_feedback.png"> <a href="https://docs.google.com/a/mozillafoundation.org/forms/d/1QeVKe8xDwmaJMqiWDBs1eCR8kpDGaUDdanUWIn-xn1Q/viewform" target="_blank">Give Us Feedback</a><br />
+                <img src="image/lightbeam_icon_feedback.png"> <a href="mailto:lightbeam-feedback@mozilla.org">Give Us Feedback</a><br />
                 <a href="http://www.mozilla.org/lightbeam" target="_blank">mozilla.org/lightbeam</a>
             </div>
         </aside>
@@ -92,6 +89,18 @@
                                 <img src="" />
                                 This site is currently
                                 <b><span></span></b>.
+                                <br/>
+                            </div>
+                            <div class="pref-action">
+                                <br/>
+                                <div class="btn">
+                                    <a class="unblock hidden">
+                                        <img src="icons/lightbeam_icon_unblock.png" />Unblock Site
+                                    </a>
+                                    <a class="block">
+                                        <img src="icons/lightbeam_icon_block.png" />Block Site
+                                    </a>
+                                </div>
                             </div>
                         <div class="map-section">
                             <header class="blue-text large-header">Server Location</header>
@@ -156,46 +165,6 @@
                                 </p>
                             </section>
                         </div>
-                    <!-- Clock View Help -->
-                        <div class="clock-view-help hidden">
-                            <header class="large-header"><img src="image/lightbeam_icon_help.png" /> Visualization Help</header>
-                            <div>
-                                <div class="grey-label all-cap-header">Visualization</div> Clock View<br />
-                                <div class="grey-label all-cap-header">Best for</div> Seeing site patterns with time<br />
-                            </div>
-                            <section>
-                                <div class="blue-text all-cap-header">Description</div>
-                                <p>
-                                    In this Clock visualization, <svg class="legend-canvas-small" version="1.1" xmlns="http://www.w3.org/2000/svg"><circle class="visitedSites" cx="8" cy="8" r="6" /></svg> <b>circular nodes</b> are websites you have visited and <svg class="legend-canvas-small" version="1.1" xmlns="http://www.w3.org/2000/svg"><polygon class="unvisitedSites" points="0,14 7,2 14,14" /></svg> <b>triangular nodes</b> are third party sites.  Over time, this view reveals patterns across the arch that represent your browsing behaviours according to time and your relationship with the web.
-                                </p>
-                                <p>
-                                    This visualization becomes populated as 15 minutes increments on the arc and the previous (24 hour) session is seen faded to compare data from the previous day.
-                                </p>
-                            </section>
-                            <section>
-                                <div class="blue-text all-cap-header">Features</div>
-                                <div>
-                                    <div><span class="feature-name">Zoom In + Out</span> - on scroll</div>
-                                    <div><span class="feature-name">Pan</span> - on click + drag</div>
-                                    <div><span class="feature-name">Tooltips</span> - on hover</div>
-                                    <div><span class="feature-name">Website Profile</span> - on click</div>
-                                </div>
-                            </section>
-                            <section>
-                                <div class="blue-text all-cap-header">Legends and Controls</div>
-                                <p>
-                                    These buttons serve as toggles to help <u>identify</u> various elements on the graph.
-                                </p>
-                                <p>
-                                    When you set your site preferences:
-                                    <ul>
-                                        <li><img src="icons/lightbeam_icon_block.png" /><span class="block-text">Block</span>  means they are blocked from connecting to your browser.</li>
-                                        <li><img src="icons/lightbeam_icon_watch.png" /><span class="watch-text">Watch</span>  means they are highlighted.</li>
-                                    </ul>
-                                    These preferences can be set in the List Visualization.
-                                </p>
-                            </section>
-                        </div>
                     <!-- List View Help -->
                         <div class="list-view-help hidden">
                             <header class="large-header"><img src="image/lightbeam_icon_help.png" /> Visualization Help</header>
@@ -238,7 +207,7 @@
                         <div class="graph-view-help">
                             <header class="large-header"><img src="image/lightbeam_icon_about.png" /> About Lightbeam</header>
                             <div>
-                                <div class="grey-label all-cap-header">Version</div> 1.0<br />
+                                <div class="grey-label all-cap-header">Version</div> <span id="version-number"></span><br />
                                 <div class="grey-label all-cap-header">By</div> Mozilla Foundation<br />
                             </div>
                             <section>
@@ -269,10 +238,14 @@
                                     <li>
                                         You can choose to contribute your Lightbeam data to us. Data from Lightbeam can help us and others to understand third party relationships on the web and promote further research in the field of online tracking and privacy.
                                         <ul>
-                                            <li>If you do contribute Lightbeam data to us, your browser will send us your Lightbeam data in a manner which we believe minimizes your risk of being re-identified (you can see a list of the kind of data involved <a href="https://github.com/mozilla/lightbeam/blob/master/doc/data_format.v1.1.md">here.</a>). We will post your data along with data from others in an aggregated and open database. Opening this data can help users and researchers make more informed decisions based on the collective information.
+                                            <li>If you do contribute Lightbeam data to us, your browser will send us your Lightbeam data (you can see a list of the kind of data involved <a href="https://github.com/mozilla/lightbeam/blob/master/doc/data_format.v1.1.md">here.</a>).
+ We will post your data along with data from others in an aggregated and open database in a manner which we believe minimizes your risk of being re-identified. Opening this data can help users and researchers make more informed decisions based on the collective information.
                                             </li>
                                             <li>
-                                                Uninstalling Lightbeam prevents collection of any further Lightbeam data and will delete the data stored locally in your browser.
+                                                Clicking "Reset data" at any time will delete the data stored locally in your browser.
+                                            </li>
+                                            <li>
+                                                Uninstalling Lightbeam prevents collection of any further Lightbeam data.
                                             </li>
                                          </ul>
                                     </li>
@@ -458,49 +431,6 @@
                         </div>
                     </section>
                 </div>
-                <!-- LEGEND & CONTROLS for Clock ================================  -->
-                <div class="clock-footer hidden">
-                    <section class="legend-header">
-                        <div><header class="blue-text all-cap-header">TOGGLE CONTROLS</header></div>
-                        <div><a class="legend-toggle blue-text">Hide</a></div>
-                    </section>
-                    <section class="legend-controls">
-                        <section class="column">
-                            <div class="legend-label">
-                                <svg class="legend-canvas-small" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                    <circle class="source-sites" cx="8" cy="8" r="6" />
-                                </svg>
-                                Visited Sites
-                            </div>
-                            <div class="legend-label">
-                                <svg class="legend-canvas-small" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                    <polygon class="target-sites" points="0,14 7,2 14,14" />
-                                </svg>
-                                Third Party Sites
-                            </div>
-                        </section>
-                        <section class="column">
-                            <div class="btn legend-toggle-watched active">
-                                <a>
-                                    <svg class="legend-canvas-large" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                        <circle class="watchedSites" cx="8" cy="8" r="6" />
-                                        <polygon class="watchedSites" points="18,14 25,2 32,14" />
-                                    </svg>
-                                    Watched Sites
-                                </a>
-                            </div>
-                            <div class="btn legend-toggle-blocked active">
-                                <a>
-                                    <svg class="legend-canvas-large" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                        <circle class="blockedSites" cx="8" cy="8" r="6" />
-                                        <polygon class="blockedSites" points="18,14 25,2 32,14" />
-                                    </svg>
-                                    Blocked Sites
-                                </a>
-                            </div>
-                        </section>
-                    </section>
-              </div>
               <!-- SITE PREFERENCES for List ================================  -->
               <div class="list-footer">
                     <section class="legend-header">
@@ -550,22 +480,5 @@
 	<!-- For osc-bridge: -->
 	<script src="http://127.0.0.1:8081/socket.io/socket.io.js"></script>
 	<!-- -->
-    <script src="d3.v3.min.js"></script>
-    <script src="events.js" type="application/javascript;version=1.8"></script>
-    <script src="infobar.js" type="application/javascript;version=1.8"></script>
-    <script src="lightbeam.js" type="application/javascript;version=1.8"></script>
-    <script src="svgdataset.js" type="application/javascript;version=1.8"></script>
-    <script src="aggregate.js" type="application/javascript;version=1.8"></script>
-    <!-- from https://github.com/Nycto/PicoModal -->
-    <script src="picoModal-1.0.0.min.js"></script>
-    <script src="tooltip.js" type="application/javascript;version=1.8"></script>
-    <script src="dialog.js" type="application/javascript;version=1.8"></script>
-    <script src="ui.js" type="application/javascript;version=1.8"></script>
-    <!-- Map -->
-    <script src="parseuri.js" type="application/javascript;version=1.8"></script>
-    <!-- Visualizations -->
-    <script src="clock.js" type="application/javascript;version=1.8"></script>
-    <script src="graph.js" type="application/javascript;version=1.8"></script>
-    <script src="list.js" type="application/javascript;version=1.8"></script>
 </body>
 </html>

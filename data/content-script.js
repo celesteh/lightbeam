@@ -1,94 +1,43 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+(function (global) {
+
 // This is the e10s/message passing content script that ties the workers to the
 // addon. It can see most of the addon, the window is either not visible or not
 // mutable so we use unsafeWindow below. This handles the post message
 // connections and does a little UI work on the side.
-self.port.on('log', function log(args) {
-    if (unsafeWindow && unsafeWindow.console) {
-        unsafeWindow.console.log.call(unsafeWindow, args);
-    } else {
-        console.log('cannot call browser logging: ' + unsafeWindow);
-    }
+self.port.on('connection', function (connection) {
+  global.allConnections.push(connection);
+  global.aggregate.emit('connection', connection);
 });
 
-self.port.on('connection', function(connection) {
-    if (unsafeWindow && unsafeWindow.aggregate) {
-        unsafeWindow.allConnections.push(connection);
-        unsafeWindow.aggregate.emit('connection', connection);
-    } else {
-        console.log('cannot call unsafeWindow.aggregate: ' + unsafeWindow);
-    }
+self.port.on('passStoredConnections', function (connections) {
+  global.allConnections = connections;
+  global.aggregate.emit('load', global.allConnections);
 });
 
-self.port.on('update-blocklist', function(domain) {
-    if (unsafeWindow && unsafeWindow.aggregate) {
-        unsafeWindow.aggregate.emit('update-blocklist', domain);
-    } else {
-        console.log('cannot call unsafeWindow.aggregate to update blocklist: ' + unsafeWindow);
-    }
+self.port.on('update-blocklist', function (domain) {
+  global.aggregate.emit('update-blocklist', domain);
 });
 
-self.port.on('update-blocklist-all', function(domains) {
-    if (unsafeWindow && unsafeWindow.aggregate) {
-        unsafeWindow.aggregate.emit('update-blocklist-all', domains);
-    } else {
-        console.log('cannot call unsafeWindow.aggregate to update blocklist: ' + unsafeWindow);
-    }
+self.port.on('update-blocklist-all', function (domains) {
+  global.aggregate.emit('update-blocklist-all', domains);
 });
 
-self.port.on('init', function(lightbeamToken) {
-    console.error('content-script::init()');
-    // localStorage.lightbeamToken = lightbeamToken;
-
-    if (unsafeWindow && unsafeWindow.aggregate && !unsafeWindow.aggregate.initialized) {
-        unsafeWindow.allConnections = getAllConnections();
-        unsafeWindow.aggregate.emit('load', unsafeWindow.allConnections);
-    } else {
-        console.error('cannot call unsafeWindow.aggregate: %s', unsafeWindow);
-    }
-
-    // FIXME: temporary solution for now.  need to clean up the code
-    if (unsafeWindow && unsafeWindow.showPromptToShareDialog) {
-        unsafeWindow.showPromptToShareDialog();
-    } else {
-        console.error('cannot call unsafeWindow.showPromptToShare: %s', unsafeWindow);
-    }
+self.port.on('init', function () {
+  console.debug('content-script::init()');
+  global.aggregate.emit('load', global.allConnections);
 });
 
-
-self.port.on("passTempConnections", function(connReceived) {
-    // connReceived can be an empty array [] or an array of connection arrays [ [], [], [] ]
-    self.port.emit("tempConnectionTransferred", true);
-
-    localStorage.lastSaved = Date.now();
-
-    var nonPrivateConnections = connReceived.filter(function(connection) {
-        return (connection[unsafeWindow.FROM_PRIVATE_MODE] == false);
-    });
-    unsafeWindow.saveConnectionsByDate(nonPrivateConnections);
+self.port.on("updateUIFromMetadata", function (metadata) {
+  console.debug("Got add-on metadata", metadata);
+  global.aggregate.emit("updateUIFromMetadata", metadata);
 });
 
-self.port.on("promptToSaveOldData", function(data) {
-    unsafeWindow.promptToSaveOldDataDialog(data);
+self.port.on("updateUIFromPrefs", function (prefs) {
+  console.debug("Got set prefs", prefs);
+  global.aggregate.emit("updateUIFromPrefs", prefs);
 });
 
-function getAllConnections() {
-    var allConnectionsAsArray = [];
-    Object.keys(localStorage).sort().forEach(function(key) {
-        if (key.charAt(0) == "2") { // date keys are in the format of yyyy-mm-dd
-            var conns = JSON.parse(localStorage.getItem(key));
-            allConnectionsAsArray = allConnectionsAsArray.concat(conns);
-        }
-    });
-    console.log('returning %s connections from getAllConnections', allConnectionsAsArray.length);
-    return allConnectionsAsArray;
-}
-
-self.port.on("private-browsing", function() {
-    unsafeWindow.informUserOfUnsafeWindowsDialog();
-});
-
-try {
-    unsafeWindow.addon = self.port;
-} catch (e) {
-    console.error('unable to add "addon" to unsafeWindow: %s', e);
-}
+})(this);

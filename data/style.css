@@ -1,3 +1,6 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 /*
   Visualization colour scheme:
   trackers: #E73547
@@ -712,18 +715,6 @@ text {
     visibility: hidden;
 }
 
-.clock-inner-curve{
-    fill: none;
-    stroke: #fff;
-    stroke-width: 2;
-}
-
-.clock-outer-curve{
-    fill: none;
-    stroke: #333;
-    stroke-width: 2;
-}
-
 .times-label{
     font-size: 15px;
 }
@@ -731,24 +722,6 @@ text {
 .times-am-pm-label{
     fill: #3E454D;
     font-size: 10px;
-}
-
-.clock-time{
-    font-size: 24px;
-    font-weight: bold;
-    fill: #4CC7E6;
-    visibility: visible;
-    stroke: none;
-    font-variant: normal;
-}
-
-.clock-date{
-    font-size: 28px;
-    font-weight: lighter;
-    fill: #CCC;
-    visibility: visible;
-    stroke: none;
-    font-variant: normal;
 }
 
 .tracker rect{
@@ -871,7 +844,7 @@ text {
 .breadcrumb{
     display: inline-block;
     overflow: hidden;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .breadcrumb .breadcrumb-chunk{
@@ -896,13 +869,23 @@ text {
 }
 
 .rows-selected-label{
-    display: inline-block;
     float: right;
     margin-right: 10px;
+    text-align: right;
 }
 
 .rows-selected-label div{
     display: inline-block;
+}
+
+.rows-selected-label .deselect {
+    color: white;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.rows-selected-label .deselect:hover {
+    cursor: pointer;
 }
 
 .num-selected, .num-total{
@@ -1043,10 +1026,9 @@ text {
 
 
 
-/* Legend for Graph and Clock and Site Preferences for List*/
+/* Legend for Graph and Site Preferences for List*/
 
 .graph-footer,
-.clock-footer,
 .list-footer{
     margin-right: 8px;
     flex: none;
@@ -1129,28 +1111,24 @@ text {
     font-size: 10px;
 }
 
-.graph-footer .btn,
-.clock-footer .btn{
+.graph-footer .btn {
     width: 170px;
     margin-right: 30px;
     margin-bottom: 8px;
 }
 
-.graph-footer .btn a,
-.clock-footer .btn a{
+.graph-footer .btn a{
     border-top: 2px solid #171E25;
     color: #555;
 }
 
-.graph-footer .btn a:hover,
-.clock-footer .btn a:hover{
+.graph-footer .btn a:hover{
     border-top: 2px solid #fff !important;
     opacity: 1;
     color: #fff;
 }
 
-.graph-footer .btn.active a,
-.clock-footer .btn.active a{
+.graph-footer .btn.active a{
     border-top: 2px solid #6FC3E5;
     background: #73A4B8;
     color: #fff;

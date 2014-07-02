@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Lightbeam: Illuminating Online Tracking</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/mozilla.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+          <section>
+            <h1>Lightbeam</h1>
+            <h2>Illuminating Online Tracking</h2>
+            <img src="../../../assets/logo-only/lightbeam_logo-only.svg"></img>
+            <h4>Garrett Robinson and Monica Chew</h4>
+          </section>
+
+        <section>
+
+          <section>
+            <!--
+            Privacy defined:
+            1. The state of being free from unsanctioned intrusion: a person's
+               right to privacy.
+            2. Privacy is the ability of an individual or group to seclude
+               themselves or information about themselves and thereby reveal
+               themselves selectively.
+            -->
+            <h2>What is Privacy?</h2>
+          </section>
+
+          <section>
+            <h2>Tracking</h2>
+            <!--
+            What is tracking?
+
+            Tracks are marks that you leave behind that show where you've been.
+            (breadcrumbs, metadata) Tracking is the act of collecting these
+            marks to tell a story about where you were, and to
+            try and predict where you're going.
+
+            Tracking runs directly conter to privacy.
+
+            There are lots of ways you can be tracked. Some you're probably aware
+            of, some you're probably not.
+            -->
+            <ul>
+              <li class="fragment">Security Cameras</li>
+              <li class="fragment">EZ-Pass</li>
+              <li class="fragment">Public record data brokers</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Online Tracking</h2>
+            <ul>
+              <li class="fragment">Analytics</li>
+              <li class="fragment">Advertisers</li>
+              <li class="fragment">Government surveillance</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Why Track Online?</h2>
+            <!--
+            There are some benefits to tracking.
+            1. Web site analytics help site owners understand their users, so
+               they can provide better content and cultivate their user base,
+               which in turn helps them generate revenue.
+            2. Behaviorally targeted advertising can help you choose products
+               based on things you've bought in the past.
+            3. Economic efficiency lets content providers use advertising as
+               a major source of income.
+            -->
+            <ol>
+              <li>Analytics helps website owners</li>
+              <li>Targeted advertising may help consumers</li>
+              <li>Major source of income for internet businesses</li>
+            </ol>
+          </section>
+
+        </section>
+
+        <section>
+          <!--
+          1. Poor visibility for tracked users. Non-consensual.
+          2. Unintended side-effects
+            a. Information leakage (history leakage through retargeting)
+            b. Abuse of tracking mechanisms for other purposes (like NSA spying)
+          3. Many people find it invasive. Ever seen a "creepy" ad on one site
+             that seemed to knew what you were looking at somewhere else
+             online?
+          -->
+          <section>
+            <h1>Drawbacks</h1>
+          </section>
+
+          <section>
+            <h2>User perception</h2>
+            <ul>
+              <li class="fragment">Poor visibility</li>
+              <li class="fragment">Confuses mental model of the web</li>
+              <li class="fragment">Seen as creepy, invasive</li>
+              <li class="fragment">Non-consensual</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Information leakage</h2>
+            <a href="http://www.nytimes.com/2006/08/09/technology/09aol.html">
+              <img src="img/nytimes-aol-search.png"></img>
+            </a>
+          </section>
+
+          <section>
+            <h2>Re-purposing tracking mechanisms</h2>
+            <a href="http://www.washingtonpost.com/blogs/the-switch/wp/2013/12/10/nsa-uses-google-cookies-to-pinpoint-targets-for-hacking/">
+              <img src="img/wapo-nsa-google-cookies.png"></img>
+            </a>
+          </section>
+
+        </section>
+
+        <section>
+
+          <section>
+            <h2>How does tracking work?</h2>
+          </section>
+
+          <section>
+            <h2>Cookies</h2>
+            <a href="http://dawnchapel.com/2010/07/firefox-has-crashed/">
+              <img src="img/firefox-cookies-comic.png">
+            </a>
+          </section>
+
+          <section>
+            <h2>Cookies</h2>
+            <ol>
+              <li class="fragment">Site initially <b>sets</b> cookies</li>
+              <li class="fragment">Saved in the browser</li>
+              <li class="fragment">Later requests to that site include the cookies</li>
+            </ol>
+          </section>
+
+          <section>
+            <h2>Uses for Cookies</h2>
+            <ol>
+              <li class="fragment">Maintaining state
+                <ul>
+                  <li class="fragment">User accounts (<code>username=coolguy55</code>)</li>
+                  <li class="fragment">Site-wide preferences (<code>lang=EN</code>)</li>
+                </ul>
+              </li>
+              <li class="fragment">Tracking
+                <ul>
+                  <li class="fragment"><code>UID=2106bef3-23.61.194.248-1389648154</code></li>
+                </ul>
+              </li>
+            </ol>
+          </section>
+
+          <section>
+            <h2>First Parties</h2>
+            <p><img class="fragment" src="img/tracking-1-address-bar.png" style="margin:36px;" height="100px"></img></p>
+            <img class="fragment" src="img/tracking-1.png"></img>
+          </section>
+
+          <section>
+            <h2>Third Parties</h2>
+            <img class="fragment" src="img/tracking-2.png"></img>
+            <img class="fragment" src="img/tracking-legend.png"></img>
+          </section>
+
+          <section>
+            <img src="img/tracking-2a.png"></img>
+          </section>
+
+          <section>
+            <img src="img/tracking-3.png"></img>
+          </section>
+
+          <section>
+            <img src="img/tracking-4.png"></img>
+          </section>
+
+          <section>
+            <img src="img/tracking-5a.png"></img>
+          </section>
+
+          <section>
+            <img src="img/tracking-5b.png"></img>
+          </section>
+
+          <section>
+            <img src="img/tracking-5c.png"></img>
+          </section>
+
+          <section>
+            <img src="img/tracking-5d.png"></img>
+          </section>
+
+          <section>
+            <img src="img/tracking-5e.png"></img>
+          </section>
+
+          <section>
+            <img src="img/tracking-6a.png"></img>
+          </section>
+
+          <section>
+            <img src="img/tracking-6b.png"></img>
+          </section>
+
+          <section>
+            <!--
+            When multiple first parties include the same third party in their
+            sites, that 3rd party is able to track your browsing behavior
+            across those sites.
+            -->
+            <img src="img/tracking-7.png"></img>
+          </section>
+
+          <section>
+            <h1>Mixed parties</h1>
+          </section>
+
+          <section>
+            <img src="img/tracking-8.png"></img>
+          </section>
+
+          <section>
+            <img src="img/tracking-9.png"></img>
+          </section>
+
+          <section>
+            <!--
+            Sometimes sites can act both as first and third parties, and they
+            share cookies across contexts.
+            -->
+            <img src="img/tracking-10.png"></img>
+          </section>
+
+          <section>
+            <h2>What does it look like for <em>my</em> browsing history?</h2>
+          </section>
+
+        </section>
+
+        <!-- mmc slides below -->
+        <section>
+          <h2>Why Lightbeam?</h1>
+          <img src=img/screencap.jpg>
+          <!-- Need human-understandable way to consume tracking information -->
+          <!-- Too complex to understand every event -->
+        </section>
+        <section>
+          <h2>How Lightbeam works</h2>
+          <ul>
+            <li>Observe events related to cookies</li>
+            <li>Store origins associated with these events</li>
+            <li>Generate graphs using D3.js (visualization library)</li>
+          </ul>
+        </section>
+        <section>
+          <h1>Lightbeam demo</h1>
+        </section>
+        <section>
+          <h2>What's next?</h2>
+        </section>
+        <section>
+          <h2>Tab view</h2>
+          <!-- Current view is global, includes whole history, not reflective of traffic RIGHT NOW -->
+          <!-- We need it for mobile -->
+          <img src="img/ht_concept_widget.png">
+        </section>
+        <section>
+          <h2>Tab view</h2>
+          <img src="img/ht_conceptUI_browser.png">
+        </section>
+        <section>
+          <h2>Identifying tracking origins</h2>
+          <ul>
+          <li>Map intuition to algorithms</li>
+          <li>Algorithmic identification based on graph</li>
+          <li>Exciting research from UW (Tracking Observer)</li>
+          </ul>
+          <img src="img/vanilla.png">
+        </section>
+        <section>
+          <h2>Using shared data</h2>
+          <ul>
+            <li>Contributing data back to Mozilla</li>
+            <li>Aggregating data to identify tracking domains</li>
+            <li>Using open science for technical and policy decisions</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Native Firefox integration</h2>
+            <li>Make Lightbeam accessible to all Firefox users</li>
+            <li>Speed, correctness, and stability improvements</li>
+          </h2>
+        </section>
+        <section>
+          <h2>Try Lightbeam!</h2>
+          <ol>
+            <li>Get Firefox: http://getfirefox.com</li>
+            <li>Go to https://mozilla.org/lightbeam"</li>
+            <li>Click blue button "Download Lightbeam for Firefox"</li>
+            <li>Click green button "Add to Firefox"</li>
+            <li>A pop-up says "Firefox prevented this site (addons.mozilla.org) from asking you to install software on your computer". Click "Allow"</li>
+            <li>A pop-up says "Install add-ons only from authors whom you trust". Click "Install Now"</li>
+            <li>Go to the Tools menu and choose "Show Lightbeam"</li>
+          </ol>
+        </section>
+      </div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      //https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      controls: true,
+      progress: true,
+      history: true,
+      center: true,
+
+      theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+      transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+      // Parallax scrolling
+      // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+      // parallaxBackgroundSize: '2100px 900px',
+
+      // Optional libraries used to extend on reveal.js
+      dependencies: [
+        { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+        { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+      ]
+    });
+
+    </script>
+
+  </body>
+</html>

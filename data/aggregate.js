@@ -5,25 +5,32 @@
 
 // Visualization of tracking data interconnections
 
-(function (global) {
+/*
+function loadScript(url, callback)
+{
+    // Adding the script tag to the head as suggested before
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
 
-"use strict";
+    // Then bind the event to the callback function.
+    // There are several events for cross browser compatibility.
+    script.onreadystatechange = callback;
+    script.onload = callback;
 
-// An emitter that lists nodes and edges so we can build the data structure
-// used by all 3 visualizers.
-var aggregate = new Emitter();
+    // Fire the loading
+    head.appendChild(script);
+}
 
+var confOSC = function () {
 
-
-	//////////////////////////////////////////////////////////////////////
 	var OSCsocket;
-
-
 	//////////////////////////////////////////////////////////////////////
 	// connect to OSC bridge
    OSCsocket = io.connect('http://127.0.0.1', { port: 8081, rememberTransport: false});
 
-   console.log('oioioi');
+   console.log('OSC starting');
    
    OSCsocket.on('connect', function() {
         // sends to OSCsocket.io server the host/port of oscServer
@@ -39,6 +46,53 @@ var aggregate = new Emitter();
    });
 	
 	OSCsocket.emit('message', '/status', 'starting');
+	//////////////////////////////////////////////////////////////////////
+
+    return OSCsocket;
+}
+
+*/
+
+
+(function (global) {
+
+"use strict";
+
+// An emitter that lists nodes and edges so we can build the data structure
+// used by all 3 visualizers.
+var aggregate = new Emitter();
+
+
+
+	//////////////////////////////////////////////////////////////////////
+	var OSCsocket;
+    var callback;
+
+    callback = function() {
+        console.log('script loaded');
+    }
+
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'http://127.0.0.1:8081/socket.io/socket.io.js';
+
+    // Then bind the event to the callback function.
+    // There are several events for cross browser compatibility.
+    script.onreadystatechange = callback;
+    script.onload = callback;
+
+    // Fire the loading
+    head.appendChild(script);
+
+/*
+   console.log('something happens here');
+
+	//////////////////////////////////////////////////////////////////////
+	// connect to OSC bridge
+*/
+
+   //loadScript('http://127.0.0.1:8081/socket.io/socket.io.js', confOSC);
 	//////////////////////////////////////////////////////////////////////
 
 	//////////////////////////////////////////////////////////////////////
@@ -278,6 +332,29 @@ function onConnection(conn) {
       aggregate.trackerCount++;
     }
 
+    if(typeof OSCsocket === 'undefined'){
+        // your code here.
+        OSCsocket = io.connect('http://127.0.0.1', { port: 8081, rememberTransport: false});
+
+        console.log('OSC starting');
+   
+        OSCsocket.on('connect', function() {
+            // sends to OSCsocket.io server the host/port of oscServer
+            // and oscClient
+            OSCsocket.emit('config',
+                {
+                    client: {
+                        port: 57120,
+                        host: '127.0.0.1'
+                    }
+                }
+            );
+        });
+	
+	    OSCsocket.emit('message', '/status', 'starting');
+
+        console.log('OSC starting');
+    };
 
     OSCsocket.emit('message', '/site/'.concat(String(targetnode.nodeType)), targetnode.name, 
         aggregate.getConnectionCount(targetnode), targetnode.visitedCount, targetnode.cookieCount);
